@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "monitor-gastos-api"
+version = "0.1.0"
+description = ""
+authors = ["User"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
