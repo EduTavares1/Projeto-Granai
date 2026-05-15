@@ -1,0 +1,34 @@
+# =========================
+# Segredos e Configurações Locais (CRÍTICO)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Python e Caches
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# =========================
+# Ambientes Virtuais (Poetry/Venv)
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# Arquivos de Sistema Operacional (Windows/Mac)
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDEs (VS Code, PyCharm, etc)
+# =========================
+.vscode/
+.idea/
