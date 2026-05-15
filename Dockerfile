@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/li
 RUN pip install poetry
 
 # Copia apenas os arquivos de dependências primeiro (otimiza o cache do Docker)
-COPY pyproject.toml poetry.lock* /app/
+COPY pyproject.toml  /app/
 
 # Instala as dependências do projeto
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root

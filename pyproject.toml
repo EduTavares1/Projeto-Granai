@@ -9,6 +9,9 @@ readme = "README.md"
 python = "^3.12"
 fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
+sqlalchemy = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
 
 [build-system]
 requires = ["poetry-core"]

@@ -11,3 +11,8 @@ services:
     env_file:
       - .env
     restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
