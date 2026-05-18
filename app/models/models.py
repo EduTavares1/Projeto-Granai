@@ -9,6 +9,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    nome = Column(String, nullable=True)
+    telefone = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
 
     gastos = relationship("Gasto", back_populates="owner")
