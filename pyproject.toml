@@ -16,6 +16,13 @@ bcrypt = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
 python-multipart = "*"
 email-validator = "*"
+httpx = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+
+  # ── API FastAPI ──────────────────────────────────
   api:
     build: .
     container_name: monitor_gastos_api
@@ -10,9 +12,79 @@ services:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      - redis
     restart: always
     dns:
       - 8.8.8.8
       - 8.8.4.4
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
+
+  # ── Evolution API (WhatsApp) ─────────────────────
+  evolution_api:
+    image: evoapicloud/evolution-api:latest
+    container_name: evolution_api
+    ports:
+      - "8080:8080"
+    volumes:
+      - evolution_instances:/evolution/instances
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY}
+      - AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://root:root@postgres:5432/evolution?schema=public
+      - CACHE_REDIS_ENABLED=true
+      - CACHE_REDIS_URI=redis://redis:6379
+      - CACHE_REDIS_PREFIX_KEY=evolution
+      - WEBHOOK_GLOBAL_ENABLED=false
+      - LOG_BAILEYS=info
+      - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS,WEBSOCKET
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    restart: always
+
+  # ── PostgreSQL exclusivo da Evolution API ────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: evolution_db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=evolution
+    volumes:
+      - evolution_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  # ── Redis (cache da Evolution API) ──────────────
+  redis:
+    image: redis:7-alpine
+    container_name: trill_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+    command: redis-server --appendonly yes
+
+volumes:
+  evolution_instances:
+  evolution_pg_data:
+  redis_data:
+

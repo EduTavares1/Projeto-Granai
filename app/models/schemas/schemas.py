@@ -15,10 +15,14 @@ class UserResponse(BaseModel):
     email: EmailStr
     nome: Optional[str] = None
     telefone: Optional[str] = None
+    meta_mensal: Optional[float] = None
     is_active: bool
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    meta_mensal: Optional[float] = None
 
 # --- Schemas de Token ---
 
@@ -36,14 +40,39 @@ class GastoCreate(BaseModel):
     valor: float
     descricao: str
     categoria: Optional[str] = "Geral"
+    data_registro: Optional[datetime] = None
 
 class GastoUpdate(BaseModel):
     valor: Optional[float] = None
     descricao: Optional[str] = None
     categoria: Optional[str] = None
+    data_registro: Optional[datetime] = None
 
 # Schema para DADOS QUE SAEM (O que a API devolve)
 class GastoResponse(GastoCreate):
+    id: int
+    data_registro: datetime
+    user_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# --- Schemas de Receita ---
+
+class ReceitaCreate(BaseModel):
+    valor: float
+    descricao: str
+    categoria: Optional[str] = "Geral"
+    data_registro: Optional[datetime] = None
+
+class ReceitaUpdate(BaseModel):
+    valor: Optional[float] = None
+    descricao: Optional[str] = None
+    categoria: Optional[str] = None
+    data_registro: Optional[datetime] = None
+
+class ReceitaResponse(ReceitaCreate):
     id: int
     data_registro: datetime
     user_id: int

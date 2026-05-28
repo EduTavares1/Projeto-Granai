@@ -21,5 +21,5 @@ RUN poetry config virtualenvs.create false && poetry install --no-interaction --
 # Copia o restante do código
 COPY . /app/
 
-# Comando para rodar a aplicação com auto-reload
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Comando para rodar a aplicação (usando a porta definida pelo servidor ou 8000 por padrão)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
