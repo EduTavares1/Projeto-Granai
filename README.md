@@ -115,8 +115,8 @@ Projeto-Trill/
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/Projeto-Trill.git
-cd Projeto-Trill
+git clone https://github.com/seu-usuario/Projeto-Granai.git
+cd Projeto-Granai
 ```
 
 ### 2. Configure as variáveis de ambiente
