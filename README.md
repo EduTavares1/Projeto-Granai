@@ -1,4 +1,4 @@
-# 💸 Projeto Trill — Monitor Financeiro Inteligente
+# 💸 Projeto Granai — Monitor Financeiro Inteligente
 
 > Plataforma web fullstack de controle de gastos mensais com autenticação, metas financeiras, visualização de dados e integração futura com agente de IA via WhatsApp.
 
