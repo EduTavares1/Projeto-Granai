@@ -9,9 +9,13 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    nome = Column(String, nullable=True)
+    telefone = Column(String, nullable=True)
+    meta_mensal = Column(Float, nullable=True)
     is_active = Column(Boolean, default=True)
 
     gastos = relationship("Gasto", back_populates="owner")
+    receitas = relationship("Receita", back_populates="owner")
 
 class Gasto(Base):
     __tablename__ = "gastos"
@@ -24,3 +28,15 @@ class Gasto(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="gastos")
+
+class Receita(Base):
+    __tablename__ = "receitas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    valor = Column(Float, nullable=False)
+    descricao = Column(String, nullable=False)
+    categoria = Column(String, default="Outros")
+    data_registro = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    owner = relationship("User", back_populates="receitas")

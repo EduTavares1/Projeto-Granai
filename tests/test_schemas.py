@@ -27,6 +27,7 @@ class TestGastoResponse:
         agora = datetime.utcnow()
         gasto = GastoResponse(
             id=1,
+            user_id=1,
             valor=200.0,
             descricao="Supermercado",
             categoria="Alimentação",
@@ -41,11 +42,11 @@ class TestGastoResponse:
     def test_categoria_padrao(self):
         """Testa que a categoria padrão é 'Geral' quando não informada"""
         agora = datetime.utcnow()
-        gasto = GastoResponse(id=2, valor=10.0, descricao="Café", data_registro=agora)
+        gasto = GastoResponse(id=2, user_id=1, valor=10.0, descricao="Café", data_registro=agora)
         assert gasto.categoria == "Geral"
 
     def test_id_inteiro(self):
         """Testa que o id é um inteiro"""
         agora = datetime.utcnow()
-        gasto = GastoResponse(id=99, valor=5.0, descricao="X", data_registro=agora)
+        gasto = GastoResponse(id=99, user_id=1, valor=5.0, descricao="X", data_registro=agora)
         assert isinstance(gasto.id, int)
