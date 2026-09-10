@@ -17,6 +17,8 @@ python-jose = {extras = ["cryptography"], version = "*"}
 python-multipart = "*"
 email-validator = "*"
 httpx = "*"
+opencv-python-headless = "*"
+pytesseract = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

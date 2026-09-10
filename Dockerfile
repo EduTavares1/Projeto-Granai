@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Instala dependências do sistema necessárias para o Postgres
-RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq-dev gcc tesseract-ocr tesseract-ocr-por && rm -rf /var/lib/apt/lists/*
 
 # Instala o Poetry
 RUN pip install poetry

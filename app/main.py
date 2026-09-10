@@ -13,6 +13,7 @@ from app.models.schemas import schemas
 from app.core import security, deps
 from app.services import finance
 from app.services import bot
+from app.services import vision
 
 # Configuração de logging para vermos o que acontece no terminal do Docker
 logging.basicConfig(level=logging.INFO)
@@ -354,13 +355,61 @@ async def webhook_whatsapp(
             return {"status": "ignored", "reason": "fromMe"}
 
         # Extrai o texto e o número do remetente
-        texto = (
-            mensagem.get("conversation")
-            or mensagem.get("extendedTextMessage", {}).get("text")
-            or ""
-        ).strip()
+        texto = ""
+        is_image = False
+
+        if "conversation" in mensagem:
+            texto = mensagem.get("conversation", "")
+        elif "extendedTextMessage" in mensagem:
+            texto = mensagem.get("extendedTextMessage", {}).get("text", "")
+        elif "imageMessage" in mensagem:
+            is_image = True
+            texto = mensagem.get("imageMessage", {}).get("caption", "") or ""
 
         numero = key.get("remoteJid", "")
+
+        if is_image:
+            message_id = key.get("id")
+            if message_id:
+                logger.info(f"[WEBHOOK] Imagem detectada (ID: {message_id}). Baixando via Evolution API...")
+                download_url = f"{bot.EVOLUTION_URL}/chat/getBase64FromMediaMessage/{bot.EVOLUTION_INSTANCE}"
+                headers = {"apikey": bot.EVOLUTION_KEY, "Content-Type": "application/json"}
+                payload_dl = {
+                    "message": {
+                        "key": {
+                            "id": message_id
+                        }
+                    },
+                    "convertToMp4": False
+                }
+                
+                try:
+                    import httpx
+                    import base64
+                    with httpx.Client(timeout=15.0) as client:
+                        resp = client.post(download_url, json=payload_dl, headers=headers)
+                        resp.raise_for_status()
+                        base64_data = resp.json().get("base64", "")
+                        
+                        if base64_data:
+                            if "," in base64_data:
+                                base64_data = base64_data.split(",")[1]
+                            image_bytes = base64.b64decode(base64_data)
+                            
+                            # Executa OCR
+                            ocr_text = vision.extrair_texto_da_imagem(image_bytes, save_debug=True)
+                            
+                            if ocr_text.strip():
+                                if texto:
+                                    texto = f"{texto}\n\n[Texto do comprovante]:\n{ocr_text}"
+                                else:
+                                    texto = ocr_text
+                            else:
+                                logger.warning("[WEBHOOK] Nenhum texto legível extraído da imagem.")
+                        else:
+                            logger.error("[WEBHOOK] Falha ao recuperar base64 da Evolution API.")
+                except Exception as ex:
+                    logger.error(f"[WEBHOOK] Erro ao baixar/processar imagem: {ex}")
 
         if not texto or not numero:
             return {"status": "ignored", "reason": "empty message"}
